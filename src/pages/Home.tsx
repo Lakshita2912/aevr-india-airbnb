@@ -116,6 +116,7 @@ export const Home = () => {
     const [activeDrop, setActiveDrop] = useState<FlashSaleDrop | null>(null);
     const [nowTs, setNowTs] = useState(Date.now());
     const [loading, setLoading] = useState(true);
+    const [listingError, setListingError] = useState<string | null>(null);
 
     const updateParams = (patch: Record<string, string | number | boolean | null | undefined>) => {
         const params = new URLSearchParams(searchParams);
@@ -163,6 +164,7 @@ export const Home = () => {
     useEffect(() => {
         const loadListings = async () => {
             setLoading(true);
+            setListingError(null);
             try {
                 const filters: ListingFilters = {
                     category: categoryFilter,
@@ -176,8 +178,26 @@ export const Home = () => {
                 };
                 const data = await api.fetchListings(filters);
                 setListings(data);
-                const drop = await api.fetchActiveFlashDrop(new Date());
-                setActiveDrop(drop);
+
+                try {
+                    const drop = await api.fetchActiveFlashDrop(new Date());
+                    setActiveDrop(drop);
+                } catch (flashSaleError) {
+                    setActiveDrop(null);
+
+                    if (import.meta.env.DEV) {
+                        console.error(flashSaleError);
+                    }
+                }
+            } catch (error) {
+                const message = error instanceof Error ? error.message : 'Could not load listings from Supabase.';
+                setListings([]);
+                setActiveDrop(null);
+                setListingError(message);
+
+                if (import.meta.env.DEV) {
+                    console.error(error);
+                }
             } finally {
                 setLoading(false);
             }
@@ -420,6 +440,11 @@ export const Home = () => {
                             animation: 'spin 1s linear infinite'
                         }} />
                         <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
+                    </div>
+                ) : listingError ? (
+                    <div className={`${styles.emptyState} ${styles.debugErrorState}`} role="status">
+                        <h2>Listings could not load</h2>
+                        <p>{listingError}</p>
                     </div>
                 ) : listings.length > 0 ? (
                     <div className={styles.grid}>
