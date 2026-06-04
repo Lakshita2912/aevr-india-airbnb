@@ -48,25 +48,6 @@ const FILTER_CATEGORIES = [
     { slug: 'camping', label: 'Camping', Icon: Tent },
 ];
 
-const OCCASIONS = [
-    {
-        name: 'Anniversary',
-        image: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1200&auto=format&fit=crop',
-    },
-    {
-        name: 'Birthday',
-        image: 'https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?q=80&w=1200&auto=format&fit=crop',
-    },
-    {
-        name: 'Corporate Offsite',
-        image: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=1200&auto=format&fit=crop',
-    },
-    {
-        name: 'Family Reunion',
-        image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=1200&auto=format&fit=crop',
-    },
-];
-
 const BUDGET_MIN = 0;
 const BUDGET_MAX = 50000;
 const BUDGET_STEP = 1000;
@@ -459,23 +440,6 @@ export const Home = () => {
                     </div>
                 )}
 
-                <section className={styles.occasionSection} aria-labelledby="occasion-heading">
-                    <h2 id="occasion-heading" className={styles.occasionHeading}>Find Your Perfect Stay</h2>
-                    <div className={styles.occasionGrid}>
-                        {OCCASIONS.map((occasion) => (
-                            <article
-                                key={occasion.name}
-                                className={styles.occasionCard}
-                                style={{ '--occasion-image': `url(${occasion.image})` } as CSSProperties}
-                            >
-                                <div className={styles.occasionCardContent}>
-                                    <span className={styles.occasionAccent} />
-                                    <h3>{occasion.name}</h3>
-                                </div>
-                            </article>
-                        ))}
-                    </div>
-                </section>
             </main>
         </>
     );
